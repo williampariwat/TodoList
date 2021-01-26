@@ -77,7 +77,7 @@ Let's use the `keyup.enter` to create a todo:
     autofocus>
 ```
 
-On `enter` we are calling `createTodo` method, but it's not defined yet. Let's define it on `app.js` as follows:
+On `enter` we are calling `createTodo` method, but it's not defined yet. Let's define it on `Todo.vue` as follows:
 
 ```js app.js
   methods: {
@@ -146,31 +146,33 @@ Starting with the label, we want to start editing when we double-click on it. Vu
 <label @dblclick="startEditing(todo)">{{todo.text}}</label>
 ```
 
-In the `app.js` we can define start editing as follows:
+In the `Todo.vue` we can define start editing as follows:
 
 ```js app.js
-const todoApp = new Vue({
-  el: '.todoapp',
-  data: {
-    title: 'Todos',
-    todos: [
-      { text: 'Learn JavaScript ES6+ goodies', isDone: true },
-      { text: 'Learn Vue', isDone: false },
-      { text: 'Build something awesome', isDone: false },
-    ],
-    editing: null,
+export default {
+  name: "todo",
+  data() {
+    return {
+      title: "Change this!",
+      todos: JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || [
+        { text: "Learn JavaScript ES6+ goodies", isDone: true },
+        { text: "Learn Vue", isDone: false },
+        { text: "Build something awesome", isDone: false },
+      ],
+      editing: null,
+    };
   },
   methods: {
     createTodo(event) {
       const textbox = event.target;
-      this.todos.push({ text: textbox.value, isDone: false });
-      textbox.value = '';
+      this.todos.push({ text: textbox.value.trim(), isDone: false });
+      textbox.value = "";
     },
     startEditing(todo) {
       this.editing = todo;
     },
-  }
-});
+  },
+}
 ```
 
 We created a new variable `editing` in data. We just set whatever todo we are currently editing. We want only to edit one at a time, so this works perfectly. When you double-click the label, the `startEditing` function is called and set the `editing` variable to the current todo element.
@@ -198,7 +200,7 @@ Before, we implemented the `startEditing` function. Now, we need to complete the
 - `finishEditing`: applies changes to the `todo.text`. This is triggered by pressing <kbd>enter</kbd> or clicking elsewhere (blur).
 - `cancelEditing`: discard the changes and leave `todos` list untouched. This happens when you press the <kbd>esc</kbd> key.
 
-Let's go to the `app.js` and define these two functions.
+Let's go to the `Todo.vue` and define these two functions.
 
 ```js app.js
     finishEditing(event) {

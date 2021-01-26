@@ -1,74 +1,72 @@
 <template>
-<div>
+  <div>
     <section class="todoapp">
-        <header class="header">
-            <h1>{{ title }}</h1>
-            <input class="new-todo" placeholder="What needs to be done?" autofocus>
-        </header>
-
-        <!-- This section should be hidden by default and shown when there are todos -->
-        <section class="main">
-            <input id="toggle-all" class="toggle-all" type="checkbox">
-            <label for="toggle-all">Mark all as complete</label>
-            <ul class="todo-list">
-                <!-- These are here just to show the structure of the list items -->
-                <!-- List items should get the class `editing` when editing and `completed` when marked as completed -->
-                <li class="completed">
-                    <div class="view">
-                        <input class="toggle" type="checkbox" checked>
-                        <label>Taste JavaScript</label>
-                        <button class="destroy"></button>
-                    </div>
-                    <input class="edit" value="Create a TodoMVC template">
-                </li>
-                <li>
-                    <div class="view">
-                        <input class="toggle" type="checkbox">
-                        <label>Buy a unicorn</label>
-                        <button class="destroy"></button>
-                    </div>
-                    <input class="edit" value="Rule the web">
-                </li>
-            </ul>
-        </section>
-        <!-- This footer should hidden by default and shown when there are todos -->
-        <footer class="footer">
-            <!-- This should be `0 items left` by default -->
-            <span class="todo-count"><strong>0</strong> item left</span>
-            <!-- Remove this if you don't implement routing -->
-            <ul class="filters">
-                <li>
-                    <a class="selected" href="#/">All</a>
-                </li>
-                <li>
-                    <a href="#/active">Active</a>
-                </li>
-                <li>
-                    <a href="#/completed">Completed</a>
-                </li>
-            </ul>
-            <!-- Hidden if no completed items are left ↓ -->
-            <button class="clear-completed">Clear completed</button>
-        </footer>
+      <header class="header">
+        <h1 id="heading">{{ title }}</h1>
+        <input
+            v-model="todoText"
+          class="new-todo"
+          placeholder="What needs to be done?"
+          v-on:keyup.enter="createTodo"
+          autofocus
+        />
+      </header>
+      <tasks/>
+      <todo-footer
+          v-if="todos.length"
+      />
     </section>
-    <footer class="info">
-        <p>Double-click to edit a todo</p>
-        <!-- Remove the below line ↓ -->
-        <p>Template by <a href="http://sindresorhus.com">Sindre Sorhus</a></p>
-        <!-- Change this out with your name and url ↓ -->
-        <p>Created by <a href="http://todomvc.com">you</a></p>
-        <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
-    </footer>
-</div>
+    <footnote />
+  </div>
 </template>
 
 <script>
+import TodoFooter from '@/components/TodoFooter.vue';
+import Tasks from './Task.vue';
+import Footnote from './Footnote.vue';
+
+// const LOCAL_STORAGE_KEY = "todo-app-vue";
+
 export default {
-  name: 'todo',
-  data() {
-      return {
-        title: 'Hello!',
-      }
+  components: {
+    Tasks,
+    Footnote,
+    TodoFooter,
   },
-}
+  data() {
+    return {
+      title: 'Change this!',
+      todoText: '',
+      editing: null,
+    };
+  },
+  methods: {
+    createTodo() {
+      this.$store.dispatch('createTodo', { text: this.todoText.trim(), isDone: false });
+      this.todoText = '';
+    },
+    clearCompleted() {
+      this.$store.dispatch('clearCompleted');
+    },
+  },
+  computed: {
+    activeTodos() {
+      return this.$store.getters.activeTodos;
+    },
+    completedTodos() {
+      return this.$store.getters.completedTodos;
+    },
+    todos() {
+      return this.$store.getters.todos;
+    },
+  },
+  // watch: {
+  //   todos: {
+  //     deep: true,
+  //     handler(newValue) {
+  //       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newValue));
+  //     },
+  //   },
+  // },
+};
 </script>
