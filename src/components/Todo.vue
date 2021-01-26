@@ -1,5 +1,7 @@
 <template>
   <div>
+    <img alt="Vue logo" src="../assets/logo.png" />
+    <!--router-link :to="{ name: 'login' }">Go To Login Page</router-link-->
     <section class="todoapp">
       <header class="header">
         <h1 id="heading">{{ title }}</h1>
@@ -12,9 +14,7 @@
         />
       </header>
       <tasks/>
-      <todo-footer
-          v-if="todos.length"
-      />
+      <todo-footer v-if="todos.length"/>
     </section>
     <footnote />
   </div>
@@ -42,31 +42,17 @@ export default {
   },
   methods: {
     createTodo() {
-      this.$store.dispatch('createTodo', { text: this.todoText.trim(), isDone: false });
+      this.$store.dispatch('todos/createTodo', { text: this.todoText.trim(), isDone: false });
       this.todoText = '';
     },
     clearCompleted() {
-      this.$store.dispatch('clearCompleted');
+      this.$store.dispatch('todos/clearCompleted');
     },
   },
   computed: {
-    activeTodos() {
-      return this.$store.getters.activeTodos;
-    },
-    completedTodos() {
-      return this.$store.getters.completedTodos;
-    },
     todos() {
-      return this.$store.getters.todos;
+      return this.$store.state.todos.todos;
     },
   },
-  // watch: {
-  //   todos: {
-  //     deep: true,
-  //     handler(newValue) {
-  //       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newValue));
-  //     },
-  //   },
-  // },
 };
 </script>

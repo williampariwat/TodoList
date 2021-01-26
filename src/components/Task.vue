@@ -1,9 +1,9 @@
 <template>
   <div>
-    <section class="main" v-if="this.$store.getters.todos.length">
+    <section class="main" v-if="todos.length">
       <ul class="todo-list">
         <li
-          v-for="task in this.$store.getters.todos"
+          v-for="task in todos"
           v-bind:key="task.id"
           :class="{ completed: task.isDone, editing: task === editing }"
         >
@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     destroyTodo(task) {
-      this.$store.dispatch('destroyTodo', task);
+      this.$store.dispatch('todos/destroyTodo', task);
     },
     startEditing(task) {
       this.editing = task;
@@ -49,6 +49,11 @@ export default {
     },
     cancelEditing() {
       this.editing = null;
+    },
+  },
+  computed: {
+    todos() {
+      return this.$store.state.todos.todos;
     },
   },
 };

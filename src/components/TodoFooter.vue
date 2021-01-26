@@ -1,13 +1,13 @@
 <template>
   <footer class="footer">
         <span class="todo-count">
-          <strong>{{ $store.getters.activeTodos.length }}</strong>
+          <strong>{{ $store.getters['todos/activeTodos'].length }}</strong>
           item(s) left
         </span>
     <button
         class="clear-completed"
-        @click="$store.dispatch('clearCompleted')"
-        v-show="$store.getters.completedTodos.length"
+        @click="$store.dispatch('todos/clearCompleted')"
+        v-show="$store.getters['todos/completedTodos'].length"
     >
       Clear completed
     </button>
